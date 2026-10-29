@@ -1,0 +1,8 @@
+<resources>
+    <color name="sspy_background">#101114</color>
+    <color name="sspy_text">#F4F4F5</color>
+    <color name="sspy_muted">#A5A7AE</color>
+    <color name="sspy_accent">#D84A4A</color>
+    <color name="notification_icon">#FFFFFF</color>
+    <color name="launcher_background">#17191E</color>
+</resources>

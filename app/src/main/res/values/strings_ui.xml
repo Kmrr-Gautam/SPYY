@@ -1,0 +1,27 @@
+<resources>
+    <string name="status_ready">Recording starts when you open SSPY.</string>
+    <string name="status_requesting_permission">Waiting for the required permissions…</string>
+    <string name="status_permission_needed">Camera, microphone, and notification access are needed to record.</string>
+    <string name="status_starting">Preparing the rear camera…</string>
+    <string name="status_recording">Recording is active. Use the notification or button to stop.</string>
+    <string name="status_stopping">Finishing the recording…</string>
+    <string name="status_saved">Recording stopped. Video saved to Gallery.</string>
+    <string name="status_error">Recording could not be completed.</string>
+    <string name="action_start">Try again</string>
+    <string name="action_stop">Stop Recording</string>
+    <string name="permission_settings_title">Permission needed</string>
+    <string name="permission_settings_message">Camera, microphone, and notifications are required. Enable the missing permissions in Settings to use SSPY.</string>
+    <string name="open_settings">Open Settings</string>
+    <string name="cancel">Cancel</string>
+    <string name="error_permissions">Camera, microphone, and notification permissions are required.</string>
+    <string name="error_foreground_service">Android could not start the recording service. Open SSPY and try again.</string>
+    <string name="error_camera_start">The camera could not be initialized for recording.</string>
+    <string name="error_rear_camera">This device does not provide an available rear camera.</string>
+    <string name="error_finalize">The recording did not finalize successfully. The incomplete video was not saved.</string>
+    <string name="error_publish">The completed video could not be published to Gallery.</string>
+    <string name="error_stop">The active recording could not be stopped safely.</string>
+    <string name="error_notification">Notification access was removed. Recording was stopped and not saved.</string>
+    <string name="toast_recording_started">Recording started</string>
+    <string name="toast_recording_saved">Recording stopped. Video saved to Gallery.</string>
+    <string name="toast_recording_not_started">Recording was not started.</string>
+</resources>

@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">SSPY</string>
+    <string name="notification_channel_name">Recording status</string>
+    <string name="notification_channel_description">Shows when SSPY is recording video and audio</string>
+    <string name="notification_title_recording">SSPY is recording</string>
+    <string name="notification_body_recording">Rear camera and microphone recording is active.</string>
+    <string name="notification_title_starting">SSPY is preparing</string>
+    <string name="notification_body_starting">Camera recording is being initialized.</string>
+    <string name="notification_action_stop">Stop Recording</string>
+</resources>
