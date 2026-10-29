@@ -13,8 +13,8 @@
 </p>
 
 <p align="center">
-  <a href="release/app-release.apk">
-    <img src="https://img.shields.io/badge/Download-Release_APK_(v1.0)-2ea44f?style=for-the-badge&logo=android&logoColor=white" alt="Download Release APK" />
+  <a href="https://github.com/Kmrr-Gautam/SPYY/raw/main/release/app-release.apk" download="SSPY-release.apk">
+    <img src="https://img.shields.io/badge/Download-Direct_Release_APK-2ea44f?style=for-the-badge&logo=android&logoColor=white" alt="Download Release APK" />
   </a>
   <a href="https://github.com/Kmrr-Gautam/SPYY/releases">
     <img src="https://img.shields.io/badge/GitHub-Releases-blue?style=for-the-badge&logo=github&logoColor=white" alt="GitHub Releases" />
