@@ -1,12 +1,23 @@
-# SSPY — For Educational Purpose Only
+<p align="center">
+  <img src="art/logo.svg" alt="SSPY App Logo" width="130" height="130" />
+</p>
+
+<h1 align="center">SSPY</h1>
+
+<p align="center">
+  <b>⚠️ For Educational Purpose Only</b>
+</p>
 
 <p align="center">
   <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=700&size=28&pause=1000&color=36BCF7&center=true&vCenter=true&width=760&lines=For+Educational+Purpose+Only;SSPY+%E2%80%94+Android+Background+Recording+Demo;Native+CameraX+%2B+Foreground+Service" alt="For Educational Purpose Only - SSPY Android Background Recording Demo" />
 </p>
 
 <p align="center">
+  <a href="release/app-release.apk">
+    <img src="https://img.shields.io/badge/Download-Release_APK_(v1.0)-2ea44f?style=for-the-badge&logo=android&logoColor=white" alt="Download Release APK" />
+  </a>
   <a href="https://github.com/Kmrr-Gautam/SPYY/releases">
-    <img src="https://img.shields.io/badge/Download-Latest_APK-2ea44f?style=for-the-badge&logo=android&logoColor=white" alt="Download Latest APK" />
+    <img src="https://img.shields.io/badge/GitHub-Releases-blue?style=for-the-badge&logo=github&logoColor=white" alt="GitHub Releases" />
   </a>
   <a href="https://github.com/Kmrr-Gautam/SPYY">
     <img src="https://img.shields.io/badge/Notice-For_Educational_Purpose_Only-red?style=for-the-badge" alt="For Educational Purpose Only" />
@@ -142,19 +153,21 @@ flowchart TD
 # Run the state-machine unit tests
 .\gradlew.bat testDebugUnitTest
 
-# Assemble the debug APK
+# Assemble the release APK
+.\gradlew.bat assembleRelease
+
+# Or assemble the debug APK
 .\gradlew.bat assembleDebug
 ```
 
-The APK file will be output to:
-```text
-app/build/outputs/apk/debug/app-debug.apk
-```
+The APK files will be output to:
+- **Release APK**: `app/build/outputs/apk/release/app-release.apk`
+- **Debug APK**: `app/build/outputs/apk/debug/app-debug.apk`
 
 ### Install onto an Emulator or Physical Device
 
 ```powershell
-adb install -r app/build/outputs/apk/debug/app-debug.apk
+adb install -r app/build/outputs/apk/release/app-release.apk
 ```
 
 ---
