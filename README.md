@@ -1,153 +1,166 @@
-# SSPY
+# SSPY — For Educational Purpose Only
 
 <p align="center">
-  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=700&size=26&pause=1000&color=36BCF7&center=true&vCenter=true&width=720&lines=SSPY+%E2%80%94+Android+Recording+Demo;For+Educational+Purpose+Only" alt="Animated text: SSPY Android Recording Demo — For Educational Purpose Only" />
+  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=700&size=28&pause=1000&color=36BCF7&center=true&vCenter=true&width=760&lines=For+Educational+Purpose+Only;SSPY+%E2%80%94+Android+Background+Recording+Demo;Native+CameraX+%2B+Foreground+Service" alt="For Educational Purpose Only - SSPY Android Background Recording Demo" />
 </p>
 
-> **For Educational Purpose Only.** Use this project only with the informed consent of everyone being recorded and in compliance with applicable laws and policies.
+<p align="center">
+  <a href="https://github.com/Kmrr-Gautam/SPYY/releases">
+    <img src="https://img.shields.io/badge/Download-Latest_APK-2ea44f?style=for-the-badge&logo=android&logoColor=white" alt="Download Latest APK" />
+  </a>
+  <a href="https://github.com/Kmrr-Gautam/SPYY">
+    <img src="https://img.shields.io/badge/Notice-For_Educational_Purpose_Only-red?style=for-the-badge" alt="For Educational Purpose Only" />
+  </a>
+  <a href="https://github.com/Kmrr-Gautam/SPYY">
+    <img src="https://img.shields.io/badge/Platform-Android_10+_(API_29--35)-brightgreen?style=for-the-badge&logo=android" alt="Android Version" />
+  </a>
+  <a href="https://github.com/Kmrr-Gautam/SPYY">
+    <img src="https://img.shields.io/badge/CameraX-v1.4.2-blue?style=for-the-badge" alt="CameraX" />
+  </a>
+</p>
 
-SSPY is a small, native Android application that records rear-camera video with microphone audio after the user opens the app and grants the required permissions. It intentionally has no camera preview. An ongoing foreground-service notification and a minimal in-app control provide a way to stop the session. Recordings are published to the public `Movies/SSPY/` media collection only after CameraX finalizes them.
+---
 
-## Problem statement and objectives
+> [!CAUTION]
+> ## ⚠️ FOR EDUCATIONAL PURPOSE ONLY
+> **This project is strictly developed and published for educational, academic, and research purposes only.**
+>
+> - **Informed Consent**: This application must **never** be used for covert, unauthorized, or non-consensual surveillance or recording. Always obtain explicit permission from everyone present before recording video or audio.
+> - **Legal Compliance**: You are solely responsible for adhering to all local, national, and international laws regarding digital privacy, wiretapping, and video/audio recording.
+> - **Platform Safety**: This demo operates strictly within standard Android framework APIs. It does not tamper with or bypass Android's system camera/microphone indicators (green dot) or notification controls.
 
-The project demonstrates a privacy-respecting, user-initiated Android recording workflow that can continue when the activity is no longer visible. It aims to:
+---
 
-- Record H.264/AAC MP4 using CameraX when the device supports the selected configuration.
-- Keep camera and microphone access tied to an explicit launcher action and required permissions.
-- Use a foreground service and an accurate, persistent notification with a stop action.
-- Save completed recordings through MediaStore without broad filesystem access.
-- Avoid claiming success for incomplete recordings and avoid automatic upload or reboot restart.
+## 🔍 How This App Works
 
-## Requirements
+SSPY demonstrates how an Android application can perform background video and audio recording using **Android Jetpack CameraX** and a **Foreground Service** without binding a visible camera preview on screen.
 
-### Functional
+Here is the exact step-by-step process of how the application functions:
 
-- Request camera, microphone, and (Android 13+) notification permission before starting.
-- Start the rear-camera recording after permission approval; do not bind a visible Preview use case.
-- Stop through a later launcher intent, the in-app button, or the notification action.
-- Wait for CameraX finalization and publish valid output to `Movies/SSPY/`.
-- Delete failed or empty MediaStore output where the platform allows it.
+### 1. App Launch & Headless Controller (No UI)
+- When you tap the **SSPY** launcher icon, [`MainActivity`](file:///c:/Users/Gautam%20Kumar/Downloads/SSPY/app/src/main/java/com/example/sspy/activities/MainActivity.java) launches invisibly using a transparent window theme (`@android:color/transparent` with no content layout).
+- There is **no UI screen or button** shown on display.
+- The activity checks if the required permissions have been granted:
+  - `CAMERA` (Camera hardware access)
+  - `RECORD_AUDIO` (Microphone audio recording)
+  - `POST_NOTIFICATIONS` (Android 13+ foreground status notifications)
 
-### Non-functional
+### 2. Runtime Permissions
+- **First Launch**: If permissions are missing, standard Android system dialogs appear asking the user to grant access.
+- If the user denies any permission, the app displays a short explanatory message and closes.
+- If all permissions are granted, the app automatically transitions to the recording step.
 
-- Native Android UI and Java source only.
-- Single active recording session, serialized in a service-owned state machine.
-- User-visible foreground-service status; no hidden APIs, root access, upload, or boot receiver.
-- No recording data is logged.
+### 3. Starting the Recording Service
+- [`MainActivity`](file:///c:/Users/Gautam%20Kumar/Downloads/SSPY/app/src/main/java/com/example/sspy/activities/MainActivity.java) sends an `ACTION_TOGGLE` intent to [`RecordingService`](file:///c:/Users/Gautam%20Kumar/Downloads/SSPY/app/src/main/java/com/example/sspy/services/RecordingService.java) using `ContextCompat.startForegroundService()`.
+- Once the service signals that initialization has succeeded, [`MainActivity`](file:///c:/Users/Gautam%20Kumar/Downloads/SSPY/app/src/main/java/com/example/sspy/activities/MainActivity.java) immediately calls `finish()`. The user remains on their home screen or current app.
 
-## Technology stack
+### 4. CameraX Lifecycle Binding (Without Camera Preview)
+- [`RecordingService`](file:///c:/Users/Gautam%20Kumar/Downloads/SSPY/app/src/main/java/com/example/sspy/services/RecordingService.java) binds CameraX `VideoCapture<Recorder>` directly to its own **Service Lifecycle** rather than an Activity.
+- Normally, camera apps bind both a `Preview` use case and a `VideoCapture` usecase to an Activity. SSPY intentionally binds **only** `VideoCapture` to the rear camera.
+- A brief Android system Toast ("Recording started") is shown.
 
-- Java 11 source compatibility, Android Gradle Plugin 8.7.3
-- Android compile/target SDK 35; minimum SDK 29 (Android 10)
-- CameraX 1.4.2 (Camera2, Lifecycle, Video)
-- AndroidX Activity, Core, and Lifecycle Service
-- JUnit 4 state-machine unit tests
+### 5. Persistent Notification & User Safety
+- In compliance with modern Android requirements (Android 10 through Android 15 / API 35), the app displays a persistent, low-priority ongoing foreground notification in the notification shade:
+  - **Title**: `SSPY is recording`
+  - **Text**: `Rear camera and microphone recording is active.`
+  - **Action**: Includes an explicit **Stop Recording** button.
+- Android's native status bar privacy indicator (green camera/mic icon) remains active so the user is always informed of hardware use.
 
-## Architecture
+### 6. Stopping & Saving Video
+The user can stop recording in either of two ways:
+1. **Tap the notification**: Tap the **Stop Recording** button in the notification shade.
+2. **Tap the launcher icon**: Tapping the SSPY app icon again sends another `ACTION_TOGGLE` intent, which automatically commands the active recording to stop.
 
-- `activities/MainActivity.java`: requests runtime permissions, interprets launcher launches as a toggle, and exposes a minimal stop control.
-- `services/RecordingService.java`: foreground service and authoritative state owner; binds CameraX to its service lifecycle without a Preview use case.
-- `storage/VideoStorageManager.java`: prepares a pending MediaStore item under `Movies/SSPY/`, validates its size, publishes it, or removes it.
-- `notifications/RecordingNotificationManager.java`: creates and updates the ongoing status notification and explicit stop action.
-- `permissions/PermissionManager.java`: centralizes the permissions needed by this implementation.
-- `models/RecordingState.java`: legal transitions and active-state classification.
+### 7. File Storage & Gallery Publishing
+- Video is recorded in standard **H.264/AAC MP4** format using Android's Scoped Storage `MediaStore` API.
+- Output path: Public collection under **`Movies/SSPY/`**.
+- During recording, the file is tagged with `IS_PENDING = 1` so that partial/incomplete files do not appear in video galleries.
+- Upon successful finalization:
+  - CameraX finalizes the MP4 file.
+  - The service verifies the file integrity and clears the pending flag.
+  - The video is immediately available in the device's Gallery / Photos app.
+  - A brief confirmation message ("Recording stopped. Video saved to Gallery.") is displayed.
 
-## Project structure
+---
 
-```text
-SSPY/
-├── app/
-│   ├── src/main/
-│   │   ├── java/com/example/sspy/
-│   │   │   ├── activities/
-│   │   │   ├── models/
-│   │   │   ├── notifications/
-│   │   │   ├── permissions/
-│   │   │   ├── services/
-│   │   │   └── storage/
-│   │   ├── res/
-│   │   └── AndroidManifest.xml
-│   └── src/test/java/com/example/sspy/models/
-├── build.gradle
-├── gradle/wrapper/
-│   ├── gradle-wrapper.jar
-│   └── gradle-wrapper.properties
-├── gradlew
-├── gradlew.bat
-├── settings.gradle
-└── README.md
+## 📊 Visual Workflow Diagram
+
+```mermaid
+flowchart TD
+    Start([User Taps SSPY Icon]) --> PermCheck{All Permissions Granted?}
+    PermCheck -- No --> RequestPerm[Prompt System Permission Dialogs]
+    RequestPerm --> PermGranted{Granted by User?}
+    PermGranted -- No --> ShowToast[Show Status Toast & Exit]
+    PermGranted -- Yes --> StartService[Send ACTION_TOGGLE to Service]
+    PermCheck -- Yes --> StartService
+
+    subgraph Headless Launcher Activity
+        StartService --> LaunchForeground[Start Foreground RecordingService]
+        LaunchForeground --> ActivityFinish[Activity Calls finish — No UI Rendered]
+    end
+
+    subgraph Foreground Recording Service
+        LaunchForeground --> ShowNotif[Display Ongoing Notification with Stop Action]
+        ShowNotif --> InitCamera[Initialize ProcessCameraProvider]
+        InitCamera --> BindCamera[Bind VideoCapture to Service Lifecycle]
+        BindCamera --> StreamVideo[Stream Video/Audio to MediaStore: Movies/SSPY/]
+    end
+
+    subgraph Stopping & Finalization
+        StopAction([Stop Trigger: Re-tap App Icon OR Tap Notification Action]) --> StopRecord[Invoke Recording.stop]
+        StopRecord --> Finalize[CameraX VideoRecordEvent.Finalize]
+        Finalize --> Publish[Clear IS_PENDING & Publish to Gallery]
+        Publish --> Cleanup[Remove Notification & Terminate Service]
+    end
 ```
 
-## Recording and permission workflows
+---
 
-1. Tapping the SSPY launcher icon opens the launcher activity, which checks camera, microphone, and Android 13+ notification permission.
-2. SSPY requests only missing permissions. It does not start if any required permission is denied.
-3. From the visible activity, SSPY starts `RecordingService` as a camera-and-microphone foreground service.
-4. The service binds CameraX `VideoCapture<Recorder>` to its own lifecycle and selects the rear camera. No `Preview` use case is bound.
-5. After CameraX reports `Start`, SSPY shows a brief “Recording started” toast and returns to the launcher. Its low-priority, ongoing foreground-service notification remains visible, states that the rear camera and microphone are recording, and provides a **Stop Recording** action.
-6. A stop request calls `Recording.stop()`. The service waits for `Finalize`, checks the output, clears MediaStore's pending flag, and only then reports success.
-7. CameraX and device capabilities vary. If a device cannot provide the requested rear-camera recording configuration, SSPY reports an error instead of opening another camera UI or showing a fake preview.
+## 🛠️ Components & Architecture
 
-The launcher activity must briefly run to start the foreground service from a visible user action; it finishes after recording actually starts. Android may not deliver a second launcher tap to an activity already in the foreground on every launcher/device. `singleTop` and `onNewIntent` support this where available; the notification's explicit **Stop Recording** action is the fallback. Android 13+ notification permission is required by this app to ensure that its user-visible notification and stop action are available in the notification shade. The recording notification is not suppressed or replaced with a transient-only notice. Camera/microphone indicators remain controlled by Android.
+| Component | Responsibility |
+| :--- | :--- |
+| **[`MainActivity`](file:///c:/Users/Gautam%20Kumar/Downloads/SSPY/app/src/main/java/com/example/sspy/activities/MainActivity.java)** | Transparent, headless launcher activity that triggers start/stop toggles without displaying an in-app UI. |
+| **[`RecordingService`](file:///c:/Users/Gautam%20Kumar/Downloads/SSPY/app/src/main/java/com/example/sspy/services/RecordingService.java)** | Foreground service managing CameraX, audio capture, state tracking, and lifecycle teardown. |
+| **[`RecordingNotificationManager`](file:///c:/Users/Gautam%20Kumar/Downloads/SSPY/app/src/main/java/com/example/sspy/notifications/RecordingNotificationManager.java)** | Builds and updates the persistent notification with the explicit stop action. |
+| **[`VideoStorageManager`](file:///c:/Users/Gautam%20Kumar/Downloads/SSPY/app/src/main/java/com/example/sspy/storage/VideoStorageManager.java)** | Prepares pending MediaStore entries under `Movies/SSPY/`, validates sizes, and commits final videos. |
+| **[`PermissionManager`](file:///c:/Users/Gautam%20Kumar/Downloads/SSPY/app/src/main/java/com/example/sspy/permissions/PermissionManager.java)** | Encapsulates Android runtime permission checks for camera, microphone, and notifications. |
+| **[`RecordingState`](file:///c:/Users/Gautam%20Kumar/Downloads/SSPY/app/src/main/java/com/example/sspy/models/RecordingState.java)** | State machine enforcing valid state transitions (`IDLE` ➔ `STARTING` ➔ `RECORDING` ➔ `STOPPING` ➔ `FINALIZING` ➔ `SAVED`). |
 
-## Storage
+---
 
-CameraX writes directly to a MediaStore video item with MIME type `video/mp4`, relative path `Movies/SSPY/`, a collision-checked millisecond-timestamp filename, and `IS_PENDING=1`. SSPY clears the pending flag only after successful finalization and a non-empty output check. Android 10+ scoped storage is used; no broad storage permission or private duplicate is needed.
+## 🏗️ Build & Setup Instructions
 
-## Android Studio setup and build
+### Environment Requirements
+- **Android SDK**: Compile / Target SDK 35, Minimum SDK 29 (Android 10)
+- **Java**: JDK 17+ (for Gradle execution; project source compatibility is Java 11)
+- **Gradle**: 8.9 (via wrapper)
 
-1. Install Android Studio with Android SDK Platform 35 and a compatible Java 17+ runtime for Gradle (the app source compiles with Java 11 language compatibility).
-2. Open this directory as an existing Gradle project and allow Gradle sync to download the declared AndroidX/CameraX dependencies.
-3. Connect an Android 10+ device or start an emulator with a rear camera and microphone.
-4. Run the `app` configuration. Accept the requested permissions and use the foreground notification or in-app control to stop.
-
-From Windows PowerShell, the wrapper can run the local checks and produce the APK:
+### Command-Line Build (PowerShell)
 
 ```powershell
-.\gradlew.bat testDebugUnitTest assembleDebug lintDebug
+# Run the state-machine unit tests
+.\gradlew.bat testDebugUnitTest
+
+# Assemble the debug APK
+.\gradlew.bat assembleDebug
 ```
 
-The debug APK is written to `app/build/outputs/apk/debug/app-debug.apk`.
+The APK file will be output to:
+```text
+app/build/outputs/apk/debug/app-debug.apk
+```
 
-## Testing plan and actual results
+### Install onto an Emulator or Physical Device
 
-Automated unit tests cover valid and invalid recording-state transitions and active-state classification in `RecordingStateTest`. The four unit tests passed. `assembleDebug` and `lintDebug` also completed successfully using Gradle 8.9 and Android SDK Platform 35; lint reported zero errors and eight warnings, primarily newer-target/dependency recommendations plus the adaptive-icon resource qualifier.
+```powershell
+adb install -r app/build/outputs/apk/debug/app-debug.apk
+```
 
-The following need execution on a suitable emulator/device and are **not claimed as passed**:
+---
 
-- Fresh install, permission grant/denial/revocation, and notification permission behavior.
-- Rear-camera recording, audio capture, no-preview behavior, screen lock/background operation.
-- Notification stop, repeated launcher taps, rapid start/stop, and service/process termination.
-- MP4 finalization, gallery visibility and playback, duplicate filenames, storage exhaustion, and camera contention.
-- Compatibility across Android 10 through the current supported release and across device camera implementations.
+## ⚖️ Legal & Educational Disclaimer
 
-No emulator or physical-device recording scenarios were run in this environment. For an academic demonstration, record device model, Android release, test steps, expected result, observed result, and evidence for each manual scenario.
-
-## Known limitations
-
-- Camera hardware, encoder profiles, audio devices, privacy policy, thermal conditions, and vendor lifecycle behavior vary. This project has not been verified on a device in this environment.
-- Target SDK 35 foreground-service and camera/microphone restrictions apply. The service is started only from an eligible, visible activity after permission checks. Android may still stop or restrict camera/microphone use.
-- If the process is killed abruptly before CameraX can finalize, an item may remain pending until Android cleans it up; SSPY never presents it as a completed video. Recording is not restarted after process death or reboot.
-- The app requires notification permission on Android 13+ as a product safety requirement, even though Android has separate system behavior for foreground-service notices when notification permission is denied.
-- No in-app gallery or playback screen is included. Completed files are available to standard media-library/gallery apps.
-
-## Privacy and security
-
-Recording begins only after an explicit app launch and permission approval. Android's camera/microphone indicators and the foreground notification are not hidden or bypassed. SSPY does not record on boot, restart after a crash, upload media, collect analytics, or access unrelated files. Users can stop the service with the in-app button or notification action.
-
-## Academic project report outline
-
-1. Abstract
-2. Introduction
-3. Problem Statement
-4. Objectives
-5. Existing System and Proposed System
-6. System Requirements
-7. System Architecture
-8. Module Description
-9. Implementation Details
-10. Testing and Results
-11. Limitations
-12. Future Enhancements
-13. Conclusion
-14. References
+> [!IMPORTANT]
+> **For Educational Purpose Only.**
+> This software is intended exclusively for technical study, security research, and understanding modern Android background service limitations. The authors and contributors bear no liability for any misuse of this project. Always respect personal privacy and comply with applicable laws.
